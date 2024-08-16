@@ -12,7 +12,7 @@ ROLES = ["Aviation Expert", "Aviation Enthusiast"]
 
 @st.dialog("❗Key Reminder",width="large")
 def vote(role):
-    st.markdown("""While our app provides valuable information about aviation, it's important to understand that our dataset is specifically limited to the guidelines and regulations set forth by the Philippine Civil Aviation Regulation (PCAR). This means our coverage is restricted to the regulations within this jurisdiction and may not include broader or international aviation standards.
+    st.markdown("""While our app provides valuable information about aviation, it's important to understand that our dataset is specifically limited to the guidelines and regulations set forth by the Philippine Civil Aviation Regulation (PCAR) as of 08-17-2024. This means our coverage is restricted to the regulations within this jurisdiction and may not include broader or international aviation standards.
                 <br><br>For comprehensive and up-to-date aviation regulations, please refer to our data sources listed here:""", unsafe_allow_html=True
                )
     col1, col2 = st.columns(2)
