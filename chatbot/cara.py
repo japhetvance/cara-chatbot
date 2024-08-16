@@ -17,7 +17,10 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.runnables.history import RunnableWithMessageHistory
 from pinecone import Pinecone as PineconeClient, ServerlessSpec
 from pinecone_text.sparse import BM25Encoder
-nltk.download('punkt')
+
+if "stop" not in st.session_state:
+    st.session_state.stop = True
+    nltk.download('punkt')
 
 st.title("Make Every Aviatiors Life Easier with C.A.R.A Chatbot")
 
@@ -36,14 +39,11 @@ def clear_chat_history():
         st.session_state.pop("session_id")
 st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 
-# Initialize the retriever and language model
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-# Initialize Pinecone
 pc = PineconeClient(api_key=os.getenv('PINECONE_API_KEY'))
 index = pc.Index(os.getenv('PINECONE_INDEX_NAME'))
 bm25_encoder = BM25Encoder().default()
 
-# Create the retriever with the BM25 encoder
 retriever = PineconeHybridSearchRetriever(embeddings=embeddings, sparse_encoder=bm25_encoder, index=index)
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
