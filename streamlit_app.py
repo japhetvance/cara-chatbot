@@ -116,7 +116,7 @@ def medinfohubplus():
 role = st.session_state.role
 
 logout_page = st.Page(logout, title="End Session", icon=":material/logout:")
-about_us = st.Page(contactus, title="Contact Us", icon="✉️")
+about_us = st.Page(contactus, title="About Us", icon="✉️")
 medinfohubplus_info = st.Page(medinfohubplus, title="About Our Data App", icon="📱", default=(role == role))
 
 chatbot = st.Page(
