@@ -21,7 +21,7 @@ def vote(role):
     
     agree = st.checkbox("I acknowledge that I understand the limitations of the model")
    
-    if st.button("Try on CARA ChatBot ↗︎", type = "primary"):
+    if st.button("Continue", type = "primary"):
         if agree:
             st.session_state.vote = {"role": role}
             st.rerun()
@@ -140,7 +140,7 @@ if st.session_state.role in ["Aviation Expert", "Aviation Enthusiast", "Neither"
     page_dict["The Team"] = about_us_pages
 
 if len(page_dict) > 0:
-    pg = st.navigation(page_dict | {"Session": about_us_pages})
+    pg = st.navigation(page_dict | {"Session": account_pages})
 else:
     pg = st.navigation([st.Page(login)]) #defaults to login page if no acceptable role is selected
 
