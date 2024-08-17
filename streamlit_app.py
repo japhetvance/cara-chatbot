@@ -140,7 +140,7 @@ if st.session_state.role in ["Aviation Expert", "Aviation Enthusiast", "Neither"
     page_dict["The Team"] = about_us_pages
 
 if len(page_dict) > 0:
-    pg = st.navigation(page_dict | {"Session": account_pages})
+    pg = st.navigation(page_dict | {"Session": data_apps})
 else:
     pg = st.navigation([st.Page(login)]) #defaults to login page if no acceptable role is selected
 
