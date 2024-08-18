@@ -1,4 +1,5 @@
 import streamlit as st
+import time
 import os
 import uuid
 import re
@@ -47,7 +48,7 @@ def load_embeddings():
 
 @st.cache_data
 def bm25_encoder():
-    return BM25Encoder().default()
+    return BM25Encoder()
 
 @st.cache_resource
 def initialize_pinecone_client(api_key, index_name):
@@ -146,14 +147,16 @@ if prompt := st.chat_input():
     with st.chat_message("user"):
         st.write(prompt)
 
-# Generate a new response if last message is not from assistant
-if st.session_state.messages[-1]["role"] != "assistant":
-    with st.chat_message("assistant"):
-        with st.spinner("Thinking..."):
-            response = conversational_rag_chain.invoke(
-                {"input": prompt}
-            )["answer"]
-            st.write(response)
-            # st.write("Session ID:", session_id)
-    message = {"role": "assistant", "content": response}
-    st.session_state.messages.append(message)
+    # Generate a new response if the last message is not from the assistant
+    if st.session_state.messages[-1]["role"] != "assistant":
+        with st.chat_message("assistant"):
+            with st.spinner("Thinking..."):
+                # Adding a small delay to smooth the transition
+                time.sleep(0.5)
+                response = conversational_rag_chain.invoke(
+                    {"input": prompt}
+                )["answer"]
+                st.write(response)
+                # st.write("Session ID:", session_id)
+        message = {"role": "assistant", "content": response}
+        st.session_state.messages.append(message)
