@@ -42,11 +42,11 @@ def clear_chat_history():
 st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 
 # Cache heavy operations like loading embeddings
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=5, show_spinner=False)
 def load_embeddings():
     return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 
-@st.cache_data
+@st.cache_data(ttl=3600, max_entries=5, show_spinner=False)
 def bm25_encoder():
     return BM25Encoder().default()
 
