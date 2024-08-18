@@ -1,11 +1,11 @@
 import streamlit as st
 import os
 import uuid
-from uuid import uuid4
 import re
 import getpass
 import pandas as pd
 import numpy as np
+from uuid import uuid4
 import nltk
 from langchain_community.retrievers import PineconeHybridSearchRetriever
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -18,9 +18,10 @@ from langchain_core.runnables.history import RunnableWithMessageHistory
 from pinecone import Pinecone as PineconeClient, ServerlessSpec
 from pinecone_text.sparse import BM25Encoder
 
-if "stop" not in st.session_state:
-    st.session_state.stop = True
+# Lazy download nltk data only if not already downloaded
+if "nltk_data" not in st.session_state:
     nltk.download('punkt')
+    st.session_state.nltk_data = True
 
 st.title("Make Every Aviators Life Easier with C.A.R.A Chatbot")
 
@@ -39,10 +40,24 @@ def clear_chat_history():
         st.session_state.pop("session_id")
 st.sidebar.button('Clear Chat History', on_click=clear_chat_history)
 
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-pc = PineconeClient(api_key=os.getenv('PINECONE_API_KEY'))
-index = pc.Index(os.getenv('PINECONE_INDEX_NAME'))
-bm25_encoder = BM25Encoder().default()
+# Cache heavy operations like loading embeddings
+@st.cache_data
+def load_embeddings():
+    return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+@st.cache_data
+def bm25_encoder():
+    return BM25Encoder().default()
+
+@st.cache_data
+def initialize_pinecone_client(api_key, index_name):
+    pc = PineconeClient(api_key=api_key)
+    index = pc.Index(index_name)
+    return index
+
+embeddings = load_embeddings()
+index = initialize_pinecone_client(os.getenv('PINECONE_API_KEY'), os.getenv('PINECONE_INDEX_NAME'))
+bm25_encoder = bm25_encoder()
 
 retriever = PineconeHybridSearchRetriever(embeddings=embeddings, sparse_encoder=bm25_encoder, index=index)
 
@@ -64,7 +79,7 @@ contextualize_q_prompt = ChatPromptTemplate.from_messages(
 history_aware_retriever = create_history_aware_retriever(
     llm, retriever, contextualize_q_prompt
 )
-# Answer question
+
 if user_profile == "Aviation Expert":
     qa_system_prompt = """You are Cara, an AI assistant specializing in aviation queries. \
     Use the provided context to answer the user's question. Provide all information available to answer the queries \
