@@ -3,3 +3,6 @@ base="dark"
 primaryColor = "#003285"
 textColor="#ffffff"
 font="sans serif"
+
+[server]
+fileWatcherType = "none"
