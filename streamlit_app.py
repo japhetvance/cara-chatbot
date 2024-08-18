@@ -21,7 +21,7 @@ def vote(role):
     
     agree = st.checkbox("I acknowledge that I understand the limitations of the model")
    
-    if st.button("Try on CARA ChatBot ↗︎", type = "primary"):
+    if st.button("Continue", type = "primary"):
         if agree:
             st.session_state.vote = {"role": role}
             st.rerun()
@@ -49,7 +49,7 @@ def login():
 
     role = col2.radio("I am a ",ROLES, index = None, label_visibility = "collapsed",captions = ["Empowering you with comprehensive aviation knowledge, tools, and resources to excel in your career and stay informed on the latest regulations.", "Providing you with easy access to accurate aviation information, insights, and updates to fuel your passion for flying."] )
     # role = col2.selectbox("Choose your role", ROLES)
-    if st.session_state.vote == None: 
+    if st.session_state.vote == None:
         
         if col2.button("Next"):
             if role:
@@ -140,7 +140,7 @@ if st.session_state.role in ["Aviation Expert", "Aviation Enthusiast", "Neither"
     page_dict["The Team"] = about_us_pages
 
 if len(page_dict) > 0:
-    pg = st.navigation(page_dict | {"Session": data_apps})
+    pg = st.navigation(page_dict | {"Session": account_pages})
 else:
     pg = st.navigation([st.Page(login)]) #defaults to login page if no acceptable role is selected
 

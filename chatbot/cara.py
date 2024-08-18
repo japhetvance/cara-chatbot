@@ -22,7 +22,7 @@ if "stop" not in st.session_state:
     st.session_state.stop = True
     nltk.download('punkt')
 
-st.title("Make Every Aviatiors Life Easier with C.A.R.A Chatbot")
+st.title("Make Every Aviators Life Easier with C.A.R.A Chatbot")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -47,6 +47,7 @@ bm25_encoder = BM25Encoder().default()
 retriever = PineconeHybridSearchRetriever(embeddings=embeddings, sparse_encoder=bm25_encoder, index=index)
 
 llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+user_profile = st.session_state.role
 
 # Contextualize question
 contextualize_q_system_prompt = """Given a chat history and the latest user question \
@@ -63,18 +64,30 @@ contextualize_q_prompt = ChatPromptTemplate.from_messages(
 history_aware_retriever = create_history_aware_retriever(
     llm, retriever, contextualize_q_prompt
 )
-
 # Answer question
-qa_system_prompt = """You are Cara, an AI assistant specializing in aviation queries. \
-Use the provided context to answer the user's question. \
-If the answer is not in context, just say that you don't know and ask to provide more information or ask aviation related queries only \
-But you can provide general information if the question is not tailored on the context. \
-Do not repeatedly ask for more questions or clarifications . \
-Keep your response concise, limited to three sentences if possible. \
-When addressing sensitive queries directly answered by the context, mention "According to PCAR" or a similar phrase, ensuring that "PCAR" is highlighted. But dont mention it for general questions that is not specifically tailored on the context \
-Capitalize all abbreviations you use.
+if user_profile == "Aviation Expert":
+    qa_system_prompt = """You are Cara, an AI assistant specializing in aviation queries. \
+    Use the provided context to answer the user's question. Provide all information available to answer the queries \
+    If the answer is not in the context, simply state that you don't know and ask for more information, or remind the user to focus on aviation-related queries. \
+    CAR and PCAR are the same thing. \
+    When addressing sensitive queries directly answered by the context, mention "According to PCAR" or a similar phrase, ensuring that "PCAR" is highlighted. But dont mention it for general questions that is not specifically tailored on the context \
+    Include source on which part of PCAR it is mentioned and its root context below each answer. For example, "Source: PCAR Part 5 - Airworthiness" \
+    Capitalize all abbreviations you use.
 
-{context}"""
+    {context}"""
+
+else:
+    qa_system_prompt = """You are Cara, an AI assistant specializing in aviation queries. \
+    Use the provided context to answer the user's question. \
+    If the answer is not in context, just say that you don't know and ask to provide more information or ask aviation related queries only \
+    But you can provide general information if the question is not tailored on the context.  CAR and PCAR are the same thing. \
+    Do not repeatedly ask for more questions or clarifications . \
+    Keep your response concise, five sentences maximum. Use layman's term as much as possible \
+    When addressing sensitive queries directly answered by the context, mention "According to PCAR" or a similar phrase, ensuring that "PCAR" is highlighted. But dont mention it for general questions that is not specifically tailored on the context \
+    Capitalize all abbreviations you use.
+
+    {context}"""
+    
 qa_prompt = ChatPromptTemplate.from_messages(
     [
         ("system", qa_system_prompt),
