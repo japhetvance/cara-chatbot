@@ -1,5 +1,5 @@
 import streamlit as st
-
+ 
 
 st.set_page_config(layout='wide')
 
@@ -16,8 +16,8 @@ def vote(role):
                 <br><br>For comprehensive and up-to-date aviation regulations, please refer to our data sources listed here:""", unsafe_allow_html=True
                )
     col1, col2 = st.columns(2)
-    col1.link_button("Civil Aviation Authority of the Philippines", "https://caap.gov.ph/", use_container_width = True)
-    col2.link_button("Philippine Civil Aviation Regulation", "https://caap.gov.ph/civil-aviation-regulations/", use_container_width = True)
+    col1.link_button("CAAP Website", "https://caap.gov.ph/", use_container_width = True)
+    col2.link_button("PCAR Documents", "https://caap.gov.ph/civil-aviation-regulations/", use_container_width = True)
     
     agree = st.checkbox("I acknowledge that I understand the limitations of the model")
    

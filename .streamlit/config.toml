@@ -5,4 +5,4 @@ textColor="#ffffff"
 font="sans serif"
 
 [server]
-fileWatcherType = "none"
+fileWatcherType = "poll"
