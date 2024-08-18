@@ -49,7 +49,7 @@ def load_embeddings():
 def bm25_encoder():
     return BM25Encoder().default()
 
-@st.cache_data
+@st.cache_resource
 def initialize_pinecone_client(api_key, index_name):
     pc = PineconeClient(api_key=api_key)
     index = pc.Index(index_name)
