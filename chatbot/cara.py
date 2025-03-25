@@ -73,7 +73,6 @@ llm = ChatOpenAI(
     max_tokens=None,
     timeout=None,
     max_retries=2,
-    api_key=api_key,
 )
 user_profile = st.session_state.role
 
