@@ -62,7 +62,19 @@ bm25_encoder = bm25_encoder()
 
 retriever = PineconeHybridSearchRetriever(embeddings=embeddings, sparse_encoder=bm25_encoder, index=index)
 
-llm = ChatOpenAI(model="gpt-4", temperature=0)
+api_key = os.getenv('OPENAI_API_KEY')
+if not api_key:
+    st.error("OpenAI API key not found. Please set the OPENAI_API_KEY environment variable.")
+    st.stop()
+
+llm = ChatOpenAI(
+    model="gpt-4o",
+    temperature=0,
+    max_tokens=None,
+    timeout=None,
+    max_retries=2,
+    api_key=api_key,
+)
 user_profile = st.session_state.role
 
 # Contextualize question
